@@ -69,20 +69,31 @@ build {
       "apt-get install -y unzip",
       "curl -fsSL https://get.docker.com -o get-docker.sh",
       "sh get-docker.sh",
-      "usermod -aG docker $USER"
+      "usermod -aG docker $USER",
+      "mkdir /infra"
     ]
   }
 
+  # Ensure the destination folder exists
+  provisioner "shell" {
+    inline = [
+      "mkdir -p /infra/devops-monitoring"
+    ]
+  }
+
+
   # Copy Terraform configuration files
   provisioner "file" {
-    source      = "devops-monitoring"
-    destination = "/tmp/devops-monitoring"
+    source      = "./devops-monitoring"
+    destination = "/infra/devops-monitoring"
   }
 
   provisioner "shell" {
     inline = [
-      "cd /tmp/devops-monitoring",
-      "docker compose up -d"
+      "cd /infra/devops-monitoring",
+      "docker compose up -d",
+      "ls -lah /tmp/devops-monitoring",
+      "ls -lah /tmp/devops-monitoring/config"
     ]
   }
 }
