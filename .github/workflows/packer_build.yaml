@@ -49,6 +49,4 @@ jobs:
       run: packer validate -var-file=variables.pkrvars.hcl monitoring-server.pkr.hcl
     
     - name: Packer Build
-      run: |
-        ls -lah monitoring
-        packer build -var-file=variables.pkrvars.hcl monitoring-server.pkr.hcl
+      run: packer build -var-file=variables.pkrvars.hcl monitoring-server.pkr.hcl
