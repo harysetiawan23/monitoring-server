@@ -1,0 +1,52 @@
+name: Packer Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  PACKER_VAR_ZONE: ${{ secrets.PACKER_VAR_ZONE }}
+  PACKER_VAR_ARCH: ${{ secrets.PACKER_VAR_ARCH }}
+  PACKER_VAR_SOURCE_IMAGE_FAMILY: ${{ secrets.PACKER_VAR_SOURCE_IMAGE_FAMILY }}
+  PACKER_VAR_IMAGE_FAMILY: ${{ secrets.PACKER_VAR_IMAGE_FAMILY }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Output cred file 
+      run: |
+        echo "${{ secrets.PROJECT_DEVOPS_SHARE_RS }}" | base64 -d > gcp-key.json
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        version: 'latest'
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ./gcp-key.json
+    - name: Set GOOGLE_APPLICATION_CREDENTIALS
+      run: |
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$(pwd)/gcp-key.json" >> $GITHUB_ENV
+
+    - name: Install Packer
+      uses: hashicorp/setup-packer@v2
+      with:
+        version: 1.9.4
+    
+    - name: Install Packer Plugin
+      run: packer init --var-file="variables.pkrvars.hcl" monitoring-server.pkr.hcl
+    
+    - name: Packer Validate
+      run: packer validate -var-file=variables.pkrvars.hcl monitoring-server.pkr.hcl
+    
+    - name: Packer Build
+      run: packer build -var-file=variables.pkrvars.hcl monitoring-server.pkr.hcl
