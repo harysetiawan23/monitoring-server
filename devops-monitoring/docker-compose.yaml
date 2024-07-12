@@ -12,6 +12,7 @@ services:
   alert-manager:
     image: prom/alertmanager
     container_name: alert-manager
+    restart: always
     volumes:
       - "./config/alertmanager/alertmanager.yml:/alertmanager/alertmanager.yml"
       - "aletmanager-data:/alertmanager/data"
@@ -23,6 +24,7 @@ services:
   prometheus:
     container_name: prometheus
     image: prom/prometheus
+    restart: always
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
@@ -38,6 +40,7 @@ services:
 
   node-exporter:
     image: prom/node-exporter
+    restart: always
     networks:
       - metrics-server
     ports:
@@ -46,6 +49,7 @@ services:
   loki:
     image: grafana/loki:2.9.2
     container_name: loki
+    restart: always
     ports:
       - "3100:3100"
     volumes:
