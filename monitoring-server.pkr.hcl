@@ -89,9 +89,7 @@ build {
   provisioner "shell" {
     inline = [
       "cd /infra/devops-monitoring",
-      "docker compose up -d",
-      "ls -lah /tmp/devops-monitoring",
-      "ls -lah /tmp/devops-monitoring/config"
+      "docker compose up -d"
     ]
   }
 }
