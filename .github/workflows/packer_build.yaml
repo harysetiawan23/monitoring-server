@@ -51,6 +51,4 @@ jobs:
     - name: Packer Build
       run: |
         pwd
-        ls -lah
-        ls -lah devops-monitoring/*
         packer build --var-file="variables.pkrvars.hcl" monitoring-server.pkr.hcl

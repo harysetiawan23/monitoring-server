@@ -45,8 +45,8 @@ source "googlecompute" "monitoring" {
   source_image_family = var.source_image_family
 
   image_family      = var.image_family
-  image_name        = "monitoring-server-1-0-${var.arch}-base-${local.datestamp}"
-  image_description = "Ubuntu Server Image For Dev"
+  image_name        = "devops-project-monitoring-server-1-0-${var.arch}-base-${local.datestamp}"
+  image_description = "Ubuntu Server Image For Monitoring Server"
 
   tags       = ["packer"]
   network    = var.network
@@ -75,7 +75,7 @@ build {
 
   # Copy Terraform configuration files
   provisioner "file" {
-    source      = "./devops-monitoring"
+    source      = "devops-monitoring"
     destination = "/tmp/devops-monitoring"
   }
 
