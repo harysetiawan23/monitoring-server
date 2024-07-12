@@ -69,8 +69,7 @@ build {
       "apt-get install -y unzip",
       "curl -fsSL https://get.docker.com -o get-docker.sh",
       "sh get-docker.sh",
-      "usermod -aG docker $USER",
-      "mkdir /infra"
+      "usermod -aG docker $USER"
     ]
   }
 
@@ -81,11 +80,10 @@ build {
     ]
   }
 
-
   # Copy Terraform configuration files
   provisioner "file" {
     source      = "./devops-monitoring"
-    destination = "/infra/devops-monitoring"
+    destination = "/infra"
   }
 
   provisioner "shell" {
