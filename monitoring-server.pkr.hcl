@@ -75,7 +75,7 @@ build {
 
   # Copy Terraform configuration files
   provisioner "file" {
-    source      = "monitoring"
+    source      = "./monitoring"
     destination = "/tmp/monitoring"
   }
 
