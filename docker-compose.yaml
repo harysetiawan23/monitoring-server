@@ -1,0 +1,61 @@
+version: "3"
+
+networks:
+  metrics-server:
+
+services:
+  alert-manager:
+    image: prom/alertmanager
+    container_name: alert-manager
+    volumes:
+      - "./config/alertmanager/alertmanager.yml:/alertmanager/alertmanager.yml"
+      - "./data/alertmanager:/alertmanager/data"
+    networks:
+      - metrics-server
+    ports:
+      - 9093:9093
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+    volumes:
+      - "./config/prometheus/prometheus.yaml:/etc/prometheus/prometheus.yml"
+      - "./config/prometheus/alert.rules.yaml:/etc/prometheus/alert.rules.yml"
+      - "./data/prometheus:/prometheus"
+    networks:
+      - metrics-server
+    ports:
+      - 9090:9090
+
+  node-exporter:
+    image: prom/node-exporter
+    networks:
+      - metrics-server
+    ports:
+      - 9100:9100
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./config/loki/config.yaml:/etc/loki/local-config.yaml
+      - ./data/loki:/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - metrics-server
+
+  promtail:
+    container_name: promtail
+    image: grafana/promtail:2.9.2
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers
+      - ./config/promtail/docker-config.yml:/etc/promtail/docker-config.yml
+    command: -config.file=/etc/promtail/docker-config.yml
+    networks:
+      - metrics-server
