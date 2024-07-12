@@ -75,13 +75,13 @@ build {
 
   # Copy Terraform configuration files
   provisioner "file" {
-    source      = "./monitoring"
-    destination = "/tmp/monitoring"
+    source      = "./devops-monitoring"
+    destination = "/tmp/devops-monitoring"
   }
 
   provisioner "shell" {
     inline = [
-      "cd /tmp/monitoring",
+      "cd /tmp/devops-monitoring",
       "docker compose up -d"
     ]
   }
