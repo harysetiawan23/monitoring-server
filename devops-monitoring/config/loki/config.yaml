@@ -12,8 +12,8 @@ compactor:
   delete_request_store: filesystem
 
 limits_config:
-  max_query_lookback: 5m # 28 days
-  retention_period: 5m   # 28 days
+  max_query_lookback: 120d # 28 days
+  retention_period: 120d   # 28 days
 
 common:
   path_prefix: /loki
